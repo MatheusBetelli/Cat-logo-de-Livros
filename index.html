@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookNook | Meus Livros Favoritos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #5e4b8b;
+            --primary-dark: #4a3a6f;
+            --secondary: #e53e3e;
+            --secondary-dark: #c53030;
+            --light: #f8f9fa;
+            --dark: #2d3748;
+            --gray: #e2e8f0;
+            --white: #ffffff;
+            --transition: all 0.3s ease;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --radius: 10px;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0 5%;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .logo-text {
+            font-family: 'Merriweather', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-block;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #6a5acd 0%, #5e4b8b 100%);
+            color: var(--white);
+            padding: 5rem 5% 7rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><polygon fill="rgba(255,255,255,0.05)" points="0,100 100,0 100,100"/></svg>');
+            background-size: 100% 100%;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-family: 'Merriweather', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            max-width: 800px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Livros */
+        .section-title {
+            text-align: center;
+            margin: 3rem 0 2rem;
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary);
+            margin: 0.5rem auto;
+            border-radius: 2px;
+        }
+
+        .livros-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5% 3rem;
+        }
+
+        .livros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .livro-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .livro-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .livro-img {
+            width: 100%;
+            height: 320px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .livro-info {
+            padding: 1.5rem;
+        }
+
+        .livro-title {
+            font-family: 'Merriweather', serif;
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+
+        .livro-author {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .livro-description {
+            margin: 1rem 0;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .livro-rating {
+            color: #f1c40f;
+            margin-bottom: 1rem;
+        }
+
+        .livro-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .livro-price {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        /* Sobre */
+        .about {
+            background-color: var(--white);
+            padding: 5rem 5%;
+            margin: 3rem 0;
+        }
+
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-img {
+            flex: 1;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            height: 400px;
+            background: linear-gradient(45deg, var(--primary), #7b68ee);
+        }
+
+        .about-content {
+            flex: 1;
+        }
+
+        .about-title {
+            font-family: 'Merriweather', serif;
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .feature-icon {
+            background: var(--light);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .feature-content h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 4rem 5% 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .footer-col h3 {
+            font-family: 'Merriweather', serif;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--secondary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background-color: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        .newsletter p {
+            margin-bottom: 1rem;
+            color: #d1d5db;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+        }
+
+        .newsletter-input::placeholder {
+            color: #d1d5db;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 3rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #d1d5db;
+            font-size: 0.9rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .footer-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .about-container {
+                flex-direction: column;
+            }
+            
+            .about-img {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .nav-buttons {
+                display: none;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">📚</span>
+                <span class="logo-text">BookNook</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="#"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="#livros"><i class="fas fa-book"></i> Livros</a></li>
+                <li><a href="#sobre"><i class="fas fa-info-circle"></i> Sobre</a></li>
+                <li><a href="#"><i class="fas fa-envelope"></i> Contato</a></li>
+            </ul>
+            
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Entrar</a>
+                <a href="#" class="btn btn-primary"><i class="fas fa-user-plus"></i> Registrar</a>
+            </div>
+            
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Descubra histórias incríveis que vão transformar sua vida</h1>
+            <p class="hero-subtitle">Explore nossa coleção de livros selecionados que vão te inspirar, emocionar e transformar sua forma de ver o mundo.</p>
+            <div class="hero-buttons">
+                <a href="#livros" class="btn btn-primary">Explorar Livros</a>
+                <a href="#" class="btn btn-outline">Saiba Mais</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Livros -->
+    <section id="livros">
+        <h2 class="section-title">Meus Livros Favoritos</h2>
+        <div class="livros-container">
+            <div class="livros-grid">
+                <!-- Livro 1 -->
+                <div class="livro-card">
+                    <div class="livro-img" style="background: linear-gradient(45deg, #3498db, #1abc9c);"></div>
+                    <div class="livro-info">
+                        <h3 class="livro-title">O Poder do Hábito</h3>
+                        <p class="livro-author">Charles Duhigg</p>
+                        <div class="livro-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>(4.7)</span>
+                        </div>
+                        <p class="livro-description">Um estudo fascinante sobre como os hábitos funcionam e como podem ser transformados para melhorar nossa vida.</p>
+                        <div class="livro-actions">
+                            <span class="livro-price">R$ 49,90</span>
+                            <a href="#" class="btn btn-primary">Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Livro 2 -->
+                <div class="livro-card">
+                    <div class="livro-img" style="background: linear-gradient(45deg, #e74c3c, #e67e22);"></div>
+                    <div class="livro-info">
+                        <h3 class="livro-title">A Sutil Arte de Ligar o F*da-se</h3>
+                        <p class="livro-author">Mark Manson</p>
+                        <div class="livro-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>(4.2)</span>
+                        </div>
+                        <p class="livro-description">Uma abordagem inteligente e humorada para encontrar coragem para enfrentar as limitações da vida.</p>
+                        <div class="livro-actions">
+                            <span class="livro-price">R$ 39,90</span>
+                            <a href="#" class="btn btn-primary">Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Livro 3 -->
+                <div class="livro-card">
+                    <div class="livro-img" style="background: linear-gradient(45deg, #9b59b6, #8e44ad);"></div>
+                    <div class="livro-info">
+                        <h3 class="livro-title">Pense e Enriqueça</h3>
+                        <p class="livro-author">Napoleon Hill</p>
+                        <div class="livro-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>(4.9)</span>
+                        </div>
+                        <p class="livro-description">O clássico atemporal que já transformou milhões de vidas com seus princípios de sucesso.</p>
+                        <div class="livro-actions">
+                            <span class="livro-price">R$ 34,90</span>
+                            <a href="#" class="btn btn-primary">Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Livro 4 -->
+                <div class="livro-card">
+                    <div class="livro-img" style="background: linear-gradient(45deg, #2ecc71, #27ae60);"></div>
+                    <div class="livro-info">
+                        <h3 class="livro-title">O Homem Mais Rico da Babilônia</h3>
+                        <p class="livro-author">George S. Clason</p>
+                        <div class="livro-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>(4.6)</span>
+                        </div>
+                        <p class="livro-description">Conselhos sobre como poupar, investir e prosperar contados em histórias da antiga Babilônia.</p>
+                        <div class="livro-actions">
+                            <span class="livro-price">R$ 29,90</span>
+                            <a href="#" class="btn btn-primary">Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sobre -->
+    <section id="sobre" class="about">
+        <div class="about-container">
+            <div class="about-img"></div>
+            <div class="about-content">
+                <h2 class="about-title">Sobre o BookNook</h2>
+                <p class="about-text">O BookNook nasceu da paixão por leitura e do desejo de compartilhar histórias que transformam vidas. Nosso objetivo é criar um espaço acolhedor onde amantes de livros possam descobrir novas histórias e compartilhar suas experiências.</p>
+                <p class="about-text">Acreditamos que cada livro tem o poder de abrir portas para novos mundos, inspirar mudanças e conectar pessoas. Nossa curadoria busca trazer obras que deixem marcas positivas na vida dos leitores.</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Curadoria Especial</h3>
+                            <p>Livros selecionados que realmente valem seu tempo.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Entrega Rápida</h3>
+                            <p>Receba seus livros em até 48h nas principais cidades.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Comunidade Ativa</h3>
+                            <p>Participe de discussões e grupos de leitura.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Recompensas</h3>
+                            <p>Programa de fidelidade com benefícios exclusivos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>BookNook</h3>
+                <p style="color: #d1d5db; margin-bottom: 1rem;">Sua livraria online com as melhores histórias e experiências de leitura.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Links Úteis</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Sobre Nós</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Nossos Serviços</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Termos de Serviço</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Política de Privacidade</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Trabalhe Conosco</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Nossos Serviços</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Venda de Livros</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Clube do Livro</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Recomendações</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Eventos Literários</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Assinaturas Mensais</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col newsletter">
+                <h3>Newsletter</h3>
+                <p>Inscreva-se para receber novidades, promoções e dicas de leitura.</p>
+                <form class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Seu melhor e-mail">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 BookNook. Todos os direitos reservados. Desenvolvido com ❤️ por você!</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simples efeito de scroll suave
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
