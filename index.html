@@ -146,6 +146,16 @@
             color: var(--white);
         }
 
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+            transform: translateY(-2px);
+        }
+
         .menu-toggle {
             display: none;
             font-size: 1.5rem;
@@ -242,6 +252,7 @@
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            position: relative;
         }
 
         .livro-card:hover {
@@ -434,6 +445,7 @@
             background-color: rgba(255, 255, 255, 0.1);
             color: var(--white);
             transition: var(--transition);
+            cursor: pointer;
         }
 
         .social-link:hover {
@@ -473,6 +485,135 @@
             font-size: 0.9rem;
         }
 
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalOpen 0.3s ease-out;
+        }
+
+        @keyframes modalOpen {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            background: var(--primary);
+            color: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius) var(--radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-family: 'Merriweather', serif;
+            font-size: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            color: var(--dark);
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background-color: var(--light);
+            border-radius: 0 0 var(--radius) var(--radius);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .book-details {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .book-cover {
+            flex: 1;
+            max-width: 200px;
+            height: 300px;
+            background: linear-gradient(45deg, #3498db, #1abc9c);
+            border-radius: var(--radius);
+        }
+
+        .book-info {
+            flex: 2;
+        }
+
+        .book-meta {
+            margin: 1rem 0;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .book-meta div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-meta span:first-child {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 2000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+
+        .cart-notification.show {
+            transform: translateX(0);
+        }
+
         /* Responsividade */
         @media (max-width: 992px) {
             .footer-container {
@@ -485,6 +626,14 @@
             
             .about-img {
                 width: 100%;
+            }
+            
+            .book-details {
+                flex-direction: column;
+            }
+            
+            .book-cover {
+                max-width: 100%;
             }
         }
 
@@ -520,6 +669,10 @@
             .footer-container {
                 grid-template-columns: 1fr;
             }
+            
+            .modal-content {
+                width: 95%;
+            }
         }
     </style>
 </head>
@@ -540,8 +693,8 @@
             </ul>
             
             <div class="nav-buttons">
-                <a href="#" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Entrar</a>
-                <a href="#" class="btn btn-primary"><i class="fas fa-user-plus"></i> Registrar</a>
+                <a href="#" class="btn btn-outline" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Entrar</a>
+                <a href="#" class="btn btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> Registrar</a>
             </div>
             
             <div class="menu-toggle">
@@ -557,7 +710,7 @@
             <p class="hero-subtitle">Explore nossa coleção de livros selecionados que vão te inspirar, emocionar e transformar sua forma de ver o mundo.</p>
             <div class="hero-buttons">
                 <a href="#livros" class="btn btn-primary">Explorar Livros</a>
-                <a href="#" class="btn btn-outline">Saiba Mais</a>
+                <a href="#" class="btn btn-outline" id="saibaMaisBtn">Saiba Mais</a>
             </div>
         </div>
     </section>
@@ -584,7 +737,7 @@
                         <p class="livro-description">Um estudo fascinante sobre como os hábitos funcionam e como podem ser transformados para melhorar nossa vida.</p>
                         <div class="livro-actions">
                             <span class="livro-price">R$ 49,90</span>
-                            <a href="#" class="btn btn-primary">Detalhes</a>
+                            <button class="btn btn-primary livro-detalhes" data-id="1">Detalhes</button>
                         </div>
                     </div>
                 </div>
@@ -606,7 +759,7 @@
                         <p class="livro-description">Uma abordagem inteligente e humorada para encontrar coragem para enfrentar as limitações da vida.</p>
                         <div class="livro-actions">
                             <span class="livro-price">R$ 39,90</span>
-                            <a href="#" class="btn btn-primary">Detalhes</a>
+                            <button class="btn btn-primary livro-detalhes" data-id="2">Detalhes</button>
                         </div>
                     </div>
                 </div>
@@ -628,7 +781,7 @@
                         <p class="livro-description">O clássico atemporal que já transformou milhões de vidas com seus princípios de sucesso.</p>
                         <div class="livro-actions">
                             <span class="livro-price">R$ 34,90</span>
-                            <a href="#" class="btn btn-primary">Detalhes</a>
+                            <button class="btn btn-primary livro-detalhes" data-id="3">Detalhes</button>
                         </div>
                     </div>
                 </div>
@@ -650,7 +803,7 @@
                         <p class="livro-description">Conselhos sobre como poupar, investir e prosperar contados em histórias da antiga Babilônia.</p>
                         <div class="livro-actions">
                             <span class="livro-price">R$ 29,90</span>
-                            <a href="#" class="btn btn-primary">Detalhes</a>
+                            <button class="btn btn-primary livro-detalhes" data-id="4">Detalhes</button>
                         </div>
                     </div>
                 </div>
@@ -751,8 +904,8 @@
             <div class="footer-col newsletter">
                 <h3>Newsletter</h3>
                 <p>Inscreva-se para receber novidades, promoções e dicas de leitura.</p>
-                <form class="newsletter-form">
-                    <input type="email" class="newsletter-input" placeholder="Seu melhor e-mail">
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" class="newsletter-input" id="newsletterEmail" placeholder="Seu melhor e-mail" required>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
                 </form>
             </div>
@@ -763,8 +916,381 @@
         </div>
     </footer>
 
+    <!-- Modal para Detalhes do Livro -->
+    <div class="modal" id="bookModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalhes do Livro</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="bookModalBody">
+                <!-- Conteúdo será inserido dinamicamente -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline close-modal">Fechar</button>
+                <button class="btn btn-primary" id="addToCartBtn">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Login/Registro -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="authModalTitle">Entrar na Conta</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm" style="display: none;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">E-mail</label>
+                        <input type="email" id="email" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--gray); border-radius: 4px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Senha</label>
+                        <input type="password" id="password" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--gray); border-radius: 4px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+                </form>
+                
+                <form id="registerForm" style="display: none;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Nome Completo</label>
+                        <input type="text" id="name" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--gray); border-radius: 4px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="regEmail" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">E-mail</label>
+                        <input type="email" id="regEmail" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--gray); border-radius: 4px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="regPassword" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Senha</label>
+                        <input type="password" id="regPassword" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--gray); border-radius: 4px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="confirmPassword" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Confirmar Senha</label>
+                        <input type="password" id="confirmPassword" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--gray); border-radius: 4px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Registrar</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p id="authSwitchText">Não tem uma conta? <a href="#" id="authSwitchBtn">Registre-se</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificação de Carrinho -->
+    <div class="cart-notification" id="cartNotification">
+        <i class="fas fa-check-circle"></i>
+        <span>Livro adicionado ao carrinho!</span>
+    </div>
+
     <script>
-        // Simples efeito de scroll suave
+        // Dados dos livros
+        const books = {
+            1: {
+                title: "O Poder do Hábito",
+                author: "Charles Duhigg",
+                price: "R$ 49,90",
+                rating: 4.7,
+                description: "Um estudo fascinante sobre como os hábitos funcionam e como podem ser transformados para melhorar nossa vida.",
+                longDescription: "Em 'O Poder do Hábito', o premiado jornalista Charles Duhigg leva os leitores a uma viagem científica emocionante para explicar por que os hábitos existem e como podem ser transformados. Com uma pesquisa meticulosa e dezenas de entrevistas, Duhigg apresenta um novo entendimento da natureza humana e seu potencial para a transformação.",
+                pages: 408,
+                language: "Português",
+                publisher: "Objetiva",
+                isbn: "9788539004119",
+                year: 2012,
+                category: "Autoajuda, Desenvolvimento Pessoal"
+            },
+            2: {
+                title: "A Sutil Arte de Ligar o F*da-se",
+                author: "Mark Manson",
+                price: "R$ 39,90",
+                rating: 4.2,
+                description: "Uma abordagem inteligente e humorada para encontrar coragem para enfrentar as limitações da vida.",
+                longDescription: "Mark Manson defende uma ideia polêmica neste livro: a de que os conselhos de autoajuda tradicionais baseados em positividade e pensamento positivo são ineficientes e, na verdade, nos deixam mais infelizes. Com um estilo direto e bem-humorado, o autor nos mostra que a chave para uma vida melhor é saber no que vale a pena ligar o foda-se.",
+                pages: 224,
+                language: "Português",
+                publisher: "Intrínseca",
+                isbn: "9788551002494",
+                year: 2016,
+                category: "Autoajuda, Desenvolvimento Pessoal"
+            },
+            3: {
+                title: "Pense e Enriqueça",
+                author: "Napoleon Hill",
+                price: "R$ 34,90",
+                rating: 4.9,
+                description: "O clássico atemporal que já transformou milhões de vidas com seus princípios de sucesso.",
+                longDescription: "Napoleon Hill estudou as características das pessoas mais ricas de seu tempo e desenvolveu 15 leis que devem ser aplicadas para alcançar o sucesso. O livro apresenta histórias de milionários que começaram do nada e construíram impérios, como Henry Ford, Theodore Roosevelt e John Rockefeller, mostrando como eles aplicaram esses princípios.",
+                pages: 336,
+                language: "Português",
+                publisher: "José Olympio",
+                isbn: "9788503003345",
+                year: 1937,
+                category: "Negócios, Desenvolvimento Pessoal"
+            },
+            4: {
+                title: "O Homem Mais Rico da Babilônia",
+                author: "George S. Clason",
+                price: "R$ 29,90",
+                rating: 4.6,
+                description: "Conselhos sobre como poupar, investir e prosperar contados em histórias da antiga Babilônia.",
+                longDescription: "Com mais de dois milhões de exemplares vendidos no mundo todo, este clássico sobre como multiplicar riqueza e solucionar problemas financeiros elucida de forma simples e espirituosa os segredos por trás das grandes fortunas. Os ensinamentos de Bansir, Kobbi e Arkad, os homens mais ricos da Babilônia, mostram como alcançar sucesso financeiro através de histórias envolventes.",
+                pages: 160,
+                language: "Português",
+                publisher: "Ediouro",
+                isbn: "9788500013810",
+                year: 1926,
+                category: "Finanças Pessoais, Educação Financeira"
+            }
+        };
+
+        // Elementos do DOM
+        const bookModal = document.getElementById('bookModal');
+        const bookModalBody = document.getElementById('bookModalBody');
+        const authModal = document.getElementById('authModal');
+        const authModalTitle = document.getElementById('authModalTitle');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const authSwitchBtn = document.getElementById('authSwitchBtn');
+        const authSwitchText = document.getElementById('authSwitchText');
+        const cartNotification = document.getElementById('cartNotification');
+        const newsletterForm = document.getElementById('newsletterForm');
+        const saibaMaisBtn = document.getElementById('saibaMaisBtn');
+
+        // Função para mostrar modal de detalhes do livro
+        function showBookDetails(bookId) {
+            const book = books[bookId];
+            
+            bookModalBody.innerHTML = `
+                <div class="book-details">
+                    <div class="book-cover" style="background: linear-gradient(45deg, ${getBookColor(bookId)});"></div>
+                    <div class="book-info">
+                        <h3>${book.title}</h3>
+                        <p class="livro-author">${book.author}</p>
+                        <div class="livro-rating">
+                            ${generateRatingStars(book.rating)}
+                            <span>(${book.rating})</span>
+                        </div>
+                        <p>${book.longDescription}</p>
+                        
+                        <div class="book-meta">
+                            <div>
+                                <span>Páginas</span>
+                                <span>${book.pages}</span>
+                            </div>
+                            <div>
+                                <span>Idioma</span>
+                                <span>${book.language}</span>
+                            </div>
+                            <div>
+                                <span>Editora</span>
+                                <span>${book.publisher}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="book-meta">
+                            <div>
+                                <span>ISBN</span>
+                                <span>${book.isbn}</span>
+                            </div>
+                            <div>
+                                <span>Ano</span>
+                                <span>${book.year}</span>
+                            </div>
+                            <div>
+                                <span>Categoria</span>
+                                <span>${book.category}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="livro-actions" style="margin-top: 2rem; justify-content: center;">
+                    <span class="livro-price" style="font-size: 1.5rem;">${book.price}</span>
+                </div>
+            `;
+            
+            // Armazenar ID do livro para adicionar ao carrinho
+            document.getElementById('addToCartBtn').dataset.id = bookId;
+            bookModal.style.display = 'flex';
+        }
+
+        // Função para gerar estrelas de avaliação
+        function generateRatingStars(rating) {
+            let stars = '';
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            
+            if (halfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+
+        // Função para obter cor do livro
+        function getBookColor(bookId) {
+            const colors = {
+                1: '#3498db, #1abc9c',
+                2: '#e74c3c, #e67e22',
+                3: '#9b59b6, #8e44ad',
+                4: '#2ecc71, #27ae60'
+            };
+            return colors[bookId] || '#5e4b8b, #7b68ee';
+        }
+
+        // Função para mostrar notificação de carrinho
+        function showCartNotification(bookTitle) {
+            cartNotification.querySelector('span').textContent = `"${bookTitle}" adicionado ao carrinho!`;
+            cartNotification.classList.add('show');
+            
+            setTimeout(() => {
+                cartNotification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Botões de detalhes dos livros
+            document.querySelectorAll('.livro-detalhes').forEach(button => {
+                button.addEventListener('click', () => {
+                    const bookId = button.dataset.id;
+                    showBookDetails(bookId);
+                });
+            });
+            
+            // Botões de login/registro
+            document.getElementById('loginBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                authModalTitle.textContent = 'Entrar na Conta';
+                registerForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                authSwitchText.innerHTML = 'Não tem uma conta? <a href="#" id="authSwitchBtn">Registre-se</a>';
+                authModal.style.display = 'flex';
+            });
+            
+            document.getElementById('registerBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                authModalTitle.textContent = 'Criar Conta';
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                authSwitchText.innerHTML = 'Já tem uma conta? <a href="#" id="authSwitchBtn">Entrar</a>';
+                authModal.style.display = 'flex';
+            });
+            
+            // Alternar entre login e registro
+            authModal.addEventListener('click', (e) => {
+                if (e.target.id === 'authSwitchBtn') {
+                    e.preventDefault();
+                    if (loginForm.style.display === 'none') {
+                        authModalTitle.textContent = 'Entrar na Conta';
+                        registerForm.style.display = 'none';
+                        loginForm.style.display = 'block';
+                        authSwitchText.innerHTML = 'Não tem uma conta? <a href="#" id="authSwitchBtn">Registre-se</a>';
+                    } else {
+                        authModalTitle.textContent = 'Criar Conta';
+                        loginForm.style.display = 'none';
+                        registerForm.style.display = 'block';
+                        authSwitchText.innerHTML = 'Já tem uma conta? <a href="#" id="authSwitchBtn">Entrar</a>';
+                    }
+                }
+            });
+            
+            // Fechar modais
+            document.querySelectorAll('.close-modal').forEach(button => {
+                button.addEventListener('click', () => {
+                    bookModal.style.display = 'none';
+                    authModal.style.display = 'none';
+                });
+            });
+            
+            // Adicionar livro ao carrinho
+            document.getElementById('addToCartBtn').addEventListener('click', () => {
+                const bookId = document.getElementById('addToCartBtn').dataset.id;
+                const book = books[bookId];
+                showCartNotification(book.title);
+                bookModal.style.display = 'none';
+            });
+            
+            // Formulário de newsletter
+            newsletterForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('newsletterEmail').value;
+                
+                if (validateEmail(email)) {
+                    alert(`Obrigado por se inscrever na nossa newsletter! Enviamos uma confirmação para ${email}.`);
+                    newsletterForm.reset();
+                } else {
+                    alert('Por favor, insira um endereço de e-mail válido.');
+                }
+            });
+            
+            // Botão "Saiba Mais"
+            saibaMaisBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('O BookNook é uma livraria online dedicada a trazer os melhores títulos de desenvolvimento pessoal e negócios. Nossa missão é conectar leitores com histórias transformadoras.');
+            });
+            
+            // Validar formulários
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                if (email && password) {
+                    alert('Login realizado com sucesso! Redirecionando...');
+                    authModal.style.display = 'none';
+                    loginForm.reset();
+                }
+            });
+            
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('regEmail').value;
+                const password = document.getElementById('regPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (password !== confirmPassword) {
+                    alert('As senhas não coincidem!');
+                    return;
+                }
+                
+                if (name && email && password) {
+                    alert(`Conta criada com sucesso para ${name}! Verifique seu e-mail para ativar sua conta.`);
+                    authModal.style.display = 'none';
+                    registerForm.reset();
+                }
+            });
+        });
+        
+        // Fechar modais ao clicar fora do conteúdo
+        window.addEventListener('click', (e) => {
+            if (e.target === bookModal) {
+                bookModal.style.display = 'none';
+            }
+            if (e.target === authModal) {
+                authModal.style.display = 'none';
+            }
+        });
+        
+        // Função para validar e-mail
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        // Scroll suave para âncoras
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
